@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Import the CORS extension
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for the entire app
 
 unprocessed_texts = []
 processed_texts = []

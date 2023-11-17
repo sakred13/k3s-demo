@@ -6,12 +6,58 @@
 <body>
     <h1>Texts from Pods</h1>
     <h2>Unprocessed Text from Edge 1:</h2>
-    <ul>
-        <!-- Display unprocessed texts here -->
+    <ul id="unprocessed-text-list">
+        <!-- Unprocessed texts will be displayed here -->
     </ul>
     <h2>Processed Text from Edge 2:</h2>
-    <ul>
-        <!-- Display processed texts here -->
+    <ul id="processed-text-list">
+        <!-- Processed texts will be displayed here -->
     </ul>
+
+    <script>
+        // Function to fetch data from the API and set the public IP
+        function fetchData() {
+            // Replace 'localhost' with the public IP address
+            var publicIpAddress = window.location.hostname; // Use the host where the page is loaded
+            var apiUrl = 'http://' + publicIpAddress + ':5000/getTexts';
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous data
+                const unprocessedTextList = document.getElementById('unprocessed-text-list');
+                unprocessedTextList.innerHTML = '';
+                const processedTextList = document.getElementById('processed-text-list');
+                processedTextList.innerHTML = '';
+
+                // Update the unprocessed texts list
+                data['Unprocessed Text from Edge 1'].forEach(text => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = text;
+                    unprocessedTextList.appendChild(listItem);
+                });
+
+                // Update the processed texts list
+                data['Processed Text from Edge 2'].forEach(text => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = text;
+                    processedTextList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+
+        // Call the fetchData function when the page loads
+        window.onload = fetchData;
+
+        // Refresh data every 5 seconds
+        setInterval(fetchData, 5000);
+    </script>
 </body>
 </html>
